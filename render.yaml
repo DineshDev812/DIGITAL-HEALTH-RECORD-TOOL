@@ -18,8 +18,10 @@ services:
         sync: false
       - key: MAIL_PASSWORD
         sync: false
-      - key: MAIL_FROM
-        sync: false
+          - key: MAIL_FROM
+            sync: false
+          - key: BREVO_API_KEY
+            sync: false
 
 databases:
   - name: digital-health-db
