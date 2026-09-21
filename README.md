@@ -78,6 +78,23 @@ flowchart LR
 - Worker QR code generation and notifications.
 - Malayalam, Hindi, Tamil, Bengali, and English interface options.
 
+## New user guide
+
+Follow these steps when using the toolkit for the first time:
+
+1. Open the [Kerala Health application](https://frontend-one-rosy-77.vercel.app).
+2. Select **Register worker** and enter the worker's personal, contact, and employment details.
+3. Select **Register worker** to create the worker profile. Save the Worker ID shown by the application.
+4. Select **Create account**.
+5. Enter a username, an email address that the user can access, and a password of at least eight characters.
+6. Choose **Worker** as the role and enter the Worker ID from step 3.
+7. Select **Create secure account**.
+8. Return to **Login**, enter the username and password, and select **Send verification code**.
+9. Open the registered email inbox (including the Spam folder if necessary) and find the six-digit OTP.
+10. Enter the OTP in the application and select **Verify and sign in**.
+
+After signing in, a worker can view their health profile and records, manage consent permissions, view notifications, and book or review appointments.
+
 ## Repository structure
 
 ```text
