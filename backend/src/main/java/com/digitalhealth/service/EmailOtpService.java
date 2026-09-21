@@ -7,14 +7,18 @@ import java.net.http.HttpResponse;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Service
 public class EmailOtpService {
+  private static final Logger log = LoggerFactory.getLogger(EmailOtpService.class);
   private final String brevoApiKey;
   private final String from;
   private final SecureRandom random = new SecureRandom();
@@ -48,12 +52,33 @@ public class EmailOtpService {
           .build();
       HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
       if (response.statusCode() < 200 || response.statusCode() >= 300) {
+        log.warn("Brevo rejected the OTP request with HTTP {}: {}", response.statusCode(), response.body());
         throw new IllegalStateException("Brevo returned HTTP " + response.statusCode());
       }
       challenges.put(username.toLowerCase(), new Challenge(code, Instant.now().plusSeconds(600), 0));
     } catch (Exception e) {
+      log.warn("Brevo OTP delivery failed", e);
       throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,
           "Unable to send the verification email. Please try again later.");
+    }
+  }
+
+  public Map<String, Object> status() {
+    if (brevoApiKey.isBlank() || from == null || from.isBlank()) {
+      return Map.of("configured", false, "ready", false);
+    }
+    try {
+      HttpRequest request = HttpRequest.newBuilder(URI.create("https://api.brevo.com/v3/account"))
+          .timeout(Duration.ofSeconds(15))
+          .header("accept", "application/json")
+          .header("api-key", brevoApiKey)
+          .GET()
+          .build();
+      int status = client.send(request, HttpResponse.BodyHandlers.discarding()).statusCode();
+      return Map.of("configured", true, "ready", status >= 200 && status < 300, "providerStatus", status);
+    } catch (Exception e) {
+      log.warn("Unable to check Brevo account status", e);
+      return Map.of("configured", true, "ready", false);
     }
   }
 
