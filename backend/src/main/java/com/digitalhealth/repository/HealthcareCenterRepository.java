@@ -1,0 +1,1 @@
+package com.digitalhealth.repository; import com.digitalhealth.model.HealthcareCenter; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface HealthcareCenterRepository extends JpaRepository<HealthcareCenter,Long>{ List<HealthcareCenter> findByNameContainingIgnoreCaseOrAddressContainingIgnoreCase(String q,String q2); }

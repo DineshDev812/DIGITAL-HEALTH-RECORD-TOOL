@@ -1,0 +1,4 @@
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+const fields = ['fullName', 'dateOfBirth', 'gender', 'mobileNumber', 'nativeState', 'nativeDistrict', 'currentAddress', 'occupation', 'employerName', 'emergencyContactName', 'emergencyContactNumber'];
+export default function WorkerDetails({ worker }) { const { t } = useTranslation(); if (!worker) return null; return <section className="details"><h2>{t('worker.details')}</h2><p><strong>{t('common.name')}</strong> {worker.fullName}</p><p className="health-id">{t('common.healthId')} <strong>{worker.healthId}</strong></p><h3>{t('worker.registeredDetails')}</h3><dl>{fields.map((key) => <React.Fragment key={key}><dt>{t(`worker.${key}`)}</dt><dd>{worker[key] || t('common.notAvailable')}</dd></React.Fragment>)}</dl></section>; }

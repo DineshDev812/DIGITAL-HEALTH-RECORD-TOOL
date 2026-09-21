@@ -1,0 +1,18 @@
+package com.digitalhealth.service;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+import java.security.SecureRandom;
+import java.time.Instant;
+import java.util.concurrent.ConcurrentHashMap;
+
+@Service public class EmailOtpService {
+ private final JavaMailSender mail; private final String host,from; private final SecureRandom random=new SecureRandom(); private final ConcurrentHashMap<String,Challenge> challenges=new ConcurrentHashMap<>();
+ public EmailOtpService(JavaMailSender mail,@Value("${spring.mail.host:}") String host,@Value("${app.mail.from:}") String from){this.mail=mail;this.host=host;this.from=from;}
+ public void send(String username,String email){if(host==null||host.isBlank()||from==null||from.isBlank())throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Email OTP is not configured. Set SMTP_HOST, SMTP_USERNAME, SMTP_PASSWORD, and MAIL_FROM before logging in.");String code=String.format("%06d",random.nextInt(1_000_000));challenges.put(username.toLowerCase(),new Challenge(code,Instant.now().plusSeconds(600),0));SimpleMailMessage message=new SimpleMailMessage();message.setFrom(from);message.setTo(email);message.setSubject("Kerala Health login verification code");message.setText("Your Kerala Health verification code is: "+code+"\n\nIt expires in 10 minutes. Do not share this code.");try{mail.send(message);}catch(Exception e){challenges.remove(username.toLowerCase());throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE,"Unable to send the verification email. Please try again later.");}}
+ public void verify(String username,String code){String key=username.toLowerCase();Challenge c=challenges.get(key);if(c==null||c.expiresAt.isBefore(Instant.now())){challenges.remove(key);throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"The verification code has expired. Please log in again.");}if(c.attempts>=5){challenges.remove(key);throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS,"Too many invalid codes. Please log in again.");}if(!c.code.equals(code)){challenges.put(key,new Challenge(c.code,c.expiresAt,c.attempts+1));throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Invalid verification code.");}challenges.remove(key);} private record Challenge(String code,Instant expiresAt,int attempts){}
+}

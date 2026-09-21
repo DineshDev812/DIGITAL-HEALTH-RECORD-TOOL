@@ -1,0 +1,17 @@
+# Frontend build and local dependencies
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# Spring Boot build output and local data
+backend/target/
+backend/node_modules/
+backend/.m2/
+backend/.tools/
+backend/data/
+backend/private-medical-reports/
+backend/*.log
+
+# IDE files
+.vscode/

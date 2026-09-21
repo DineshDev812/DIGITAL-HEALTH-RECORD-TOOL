@@ -1,0 +1,10 @@
+package com.digitalhealth.model;
+
+import jakarta.persistence.*; import java.time.*;
+@Entity @Table(name="medical_reports", indexes=@Index(name="idx_report_worker_date",columnList="worker_id,report_date")) public class MedicalReport {
+ @Id @GeneratedValue(strategy=GenerationType.IDENTITY) private Long id;
+ @ManyToOne(fetch=FetchType.LAZY) @JoinColumn(name="worker_id",nullable=false) private Worker worker;
+ @Column(nullable=false,length=160) private String title; @Column(nullable=false,length=80) private String reportType; @Column(nullable=false) private LocalDate reportDate;
+ private String healthcareCenter; @Column(columnDefinition="TEXT") private String description; @Column(nullable=false) private String storedName; @Column(nullable=false) private String originalName; @Column(nullable=false) private String contentType; @Column(nullable=false) private long fileSize; @Column(nullable=false,updatable=false) private LocalDateTime createdAt;
+ @PrePersist void made(){createdAt=LocalDateTime.now();} public Long getId(){return id;} public Worker getWorker(){return worker;} public void setWorker(Worker v){worker=v;} public String getTitle(){return title;} public void setTitle(String v){title=v;} public String getReportType(){return reportType;} public void setReportType(String v){reportType=v;} public LocalDate getReportDate(){return reportDate;} public void setReportDate(LocalDate v){reportDate=v;} public String getHealthcareCenter(){return healthcareCenter;} public void setHealthcareCenter(String v){healthcareCenter=v;} public String getDescription(){return description;} public void setDescription(String v){description=v;} public String getStoredName(){return storedName;} public void setStoredName(String v){storedName=v;} public String getOriginalName(){return originalName;} public void setOriginalName(String v){originalName=v;} public String getContentType(){return contentType;} public void setContentType(String v){contentType=v;} public long getFileSize(){return fileSize;} public void setFileSize(long v){fileSize=v;} public LocalDateTime getCreatedAt(){return createdAt;}
+}

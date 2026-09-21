@@ -1,0 +1,114 @@
+/* Polished, compact controls for the shared application header. */
+.app-header {
+  min-height: 76px;
+  padding: 12px 18px;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  box-shadow: 0 10px 28px var(--shadow);
+}
+
+.header-controls {
+  padding: 5px;
+  gap: 8px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--soft) 82%, var(--surface));
+  box-shadow: inset 0 1px 0 color-mix(in srgb, #fff 40%, transparent);
+}
+
+.header-controls label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 5px 0 10px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 2px 7px color-mix(in srgb, var(--shadow) 60%, transparent);
+  color: var(--muted);
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.header-controls label::before {
+  content: '◎';
+  display: grid;
+  width: 23px;
+  height: 23px;
+  place-items: center;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 15%, var(--surface));
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.header-controls select {
+  min-width: 118px;
+  padding: 8px 30px 8px 7px;
+  border: 0;
+  border-radius: 8px;
+  color: var(--text);
+  background: transparent;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 112px;
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid color-mix(in srgb, var(--accent) 70%, #fff);
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 73%, #245e41));
+  color: #fff;
+  font-size: 0;
+  box-shadow: 0 5px 12px color-mix(in srgb, var(--accent) 35%, transparent), inset 0 1px 0 #ffffff40;
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, var(--accent-hover), var(--accent));
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.theme-toggle span { font-size: .95rem; }
+
+.theme-toggle::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff4a8;
+  box-shadow: 0 -7px 0 -6px #fff4a8, 0 7px 0 -6px #fff4a8, 7px 0 0 -6px #fff4a8, -7px 0 0 -6px #fff4a8, 5px 5px 0 -6px #fff4a8, -5px -5px 0 -6px #fff4a8, 5px -5px 0 -6px #fff4a8, -5px 5px 0 -6px #fff4a8;
+}
+
+.theme-toggle:active { transform: translateY(0); }
+.theme-toggle:focus-visible, .header-controls select:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent); outline-offset: 2px; }
+
+[data-theme="dark"] .app-header { background: #0d2118; }
+[data-theme="dark"] .header-controls { background: #142d20; box-shadow: inset 0 1px 0 #ffffff0d; }
+[data-theme="dark"] .header-controls label { background: #193126; border-color: #3f6e53; }
+[data-theme="dark"] .header-controls select { background: transparent; }
+[data-theme="dark"] .theme-toggle { background: linear-gradient(135deg, #4f46a5, #312e81); border-color: #a5b4fc80; color: #f5f3ff; box-shadow: 0 5px 14px #17143f88, inset 0 1px 0 #ffffff33; }
+[data-theme="dark"] .theme-toggle:hover { background: linear-gradient(135deg, #6366f1, #4338ca); box-shadow: 0 8px 20px #17143faa, inset 0 1px 0 #ffffff44; }
+[data-theme="dark"] .theme-toggle::before { background: #f1f0ff; box-shadow: 6px 0 0 -1px #40358e; }
+
+@media (max-width: 760px) {
+  .app-header { padding: 14px; }
+}
+
+@media (max-width: 650px) {
+  .header-controls { justify-content: stretch; }
+  .header-controls label { flex: 1; }
+  .header-controls select { min-width: 0; flex: 1; }
+  .theme-toggle { min-width: auto; }
+}

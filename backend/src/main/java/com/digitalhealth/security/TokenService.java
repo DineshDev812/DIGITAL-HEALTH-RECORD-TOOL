@@ -1,0 +1,8 @@
+package com.digitalhealth.security;
+import com.digitalhealth.model.UserAccount; import org.springframework.stereotype.Service; import javax.crypto.Mac; import javax.crypto.spec.SecretKeySpec; import java.nio.charset.StandardCharsets; import java.security.SecureRandom; import java.time.Instant; import java.util.*;
+@Service public class TokenService {
+ private final byte[] secret=new byte[32]; public TokenService(){new SecureRandom().nextBytes(secret);}
+ public String issue(UserAccount a){String p=a.getId()+"|"+a.getUsername()+"|"+a.getRole()+"|"+(a.getWorker()==null?"":a.getWorker().getId())+"|"+(Instant.now().plusSeconds(28800).getEpochSecond());String body=Base64.getUrlEncoder().withoutPadding().encodeToString(p.getBytes(StandardCharsets.UTF_8));return body+"."+sign(body);}
+ public AuthenticatedUser verify(String token){try{String[] x=token.split("\\.");if(x.length!=2||!constant(sign(x[0]),x[1]))return null;String[] p=new String(Base64.getUrlDecoder().decode(x[0]),StandardCharsets.UTF_8).split("\\|",-1);if(p.length!=5||Long.parseLong(p[4])<Instant.now().getEpochSecond())return null;return new AuthenticatedUser(Long.parseLong(p[0]),p[1],com.digitalhealth.model.Role.valueOf(p[2]),p[3].isBlank()?null:Long.parseLong(p[3]));}catch(Exception e){return null;}}
+ private String sign(String v){try{Mac m=Mac.getInstance("HmacSHA256");m.init(new SecretKeySpec(secret,"HmacSHA256"));return Base64.getUrlEncoder().withoutPadding().encodeToString(m.doFinal(v.getBytes(StandardCharsets.UTF_8)));}catch(Exception e){throw new IllegalStateException(e);}} private boolean constant(String a,String b){return java.security.MessageDigest.isEqual(a.getBytes(StandardCharsets.UTF_8),b.getBytes(StandardCharsets.UTF_8));}
+}

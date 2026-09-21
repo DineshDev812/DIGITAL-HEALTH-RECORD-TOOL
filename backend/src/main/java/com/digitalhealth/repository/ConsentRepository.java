@@ -1,0 +1,1 @@
+package com.digitalhealth.repository; import com.digitalhealth.model.Consent; import org.springframework.data.jpa.repository.JpaRepository; import java.util.*; public interface ConsentRepository extends JpaRepository<Consent,Long>{List<Consent> findByWorkerIdOrderByGrantedDateDesc(Long id);}

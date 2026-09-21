@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: digital-health-api
+    runtime: docker
+    rootDir: backend
+    plan: free
+    healthCheckPath: /api/centers
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: digital-health-db
+          property: connectionString
+      - key: CORS_ALLOWED_ORIGIN_PATTERNS
+        value: https://frontend-one-rosy-77.vercel.app
+      - key: MEDICAL_REPORT_STORAGE
+        value: /tmp/private-medical-reports
+      - key: MAIL_USERNAME
+        sync: false
+      - key: MAIL_PASSWORD
+        sync: false
+      - key: MAIL_FROM
+        sync: false
+
+databases:
+  - name: digital-health-db
+    plan: free
